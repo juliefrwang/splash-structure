@@ -1,16 +1,26 @@
 #!/bin/sh
 
-# Variables to be set
-RESULTS_DIR=/oak/stanford/groups/horence/juliew/github/splash-structure/test_runs # This folder has to be made ahead and will contain results of all runs.
-DATA_HANDLE=juliew  # Specifically, for the current run, result will save to folder named RESULTS_DIR/${DATA_HANDLE}_results/
-SPLASH_OUT_FILE=/oak/stanford/groups/horence/juliew/github/splash-structure/test_runs/test_data/test.after_correction.scores.tsv # SPLASH significant anchor output file
-COMPACTOR_FILE=/oak/stanford/groups/horence/juliew/github/splash-structure/test_runs/test_data/test_compactor.tsv # compactor output file
+# Get the current directory (where the user runs the script)
+BASE_DIR=$(pwd)
+
+# Define the results directory relative to the user's repo path
+DATA_HANDLE="default_test_run"  # Specifically, for the current run, results will save to folder named RESULTS_DIR/${DATA_HANDLE}_results/
+RESULTS_DIR="${BASE_DIR}/${DATA_HANDLE}_results" 
+
+# Define paths for files relative to the user's repo path
+SPLASH_OUT_FILE="${BASE_DIR}/test_data/test.after_correction.scores.tsv"  # SPLASH significant anchor output file
+COMPACTOR_FILE="${BASE_DIR}/test_data/test_compactor.tsv"  # Compactor output file
+
+# Print the paths (for debugging purposes)
+echo "Results Directory: ${RESULTS_DIR}"
+echo "SPLASH Output File: ${SPLASH_OUT_FILE}"
+echo "Compactor File: ${COMPACTOR_FILE}"
 
 # Load the environment
 source /oak/stanford/groups/horence/juliew/envs/structure_run/bin/activate
 
 # Go to the results directory
-cd $RESULTS_DIR
+cd $BASE_DIR
 
 # run structure on target
 time python3 /oak/stanford/groups/horence/juliew/github/splash-structure/scripts/main_structure_target.py $SPLASH_OUT_FILE $DATA_HANDLE &
