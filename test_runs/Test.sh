@@ -1,16 +1,10 @@
 #!/bin/sh
-#SBATCH -p horence,normal
-#SBATCH --time=5:00:00
-#SBATCH --mem=60000      # In MB
-#SBATCH --job-name=test     # job name
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
 
 # Variables to be set
 RESULTS_DIR=/oak/stanford/groups/horence/juliew/github/splash-structure/test_runs # This folder has to be made ahead and will contain results of all runs.
 DATA_HANDLE=juliew  # Specifically, for the current run, result will save to folder named RESULTS_DIR/${DATA_HANDLE}_results/
-SPLASH_OUT_FILE=/oak/stanford/groups/horence/juliew/github/splash-structure/test_runs/test.after_correction.scores.tsv # SPLASH significant anchor output file
-COMPACTOR_FILE=/oak/stanford/groups/horence/juliew/github/splash-structure/test_runs/test_compactor.tsv # compactor output file
+SPLASH_OUT_FILE=/oak/stanford/groups/horence/juliew/github/splash-structure/test_runs/test_data/test.after_correction.scores.tsv # SPLASH significant anchor output file
+COMPACTOR_FILE=/oak/stanford/groups/horence/juliew/github/splash-structure/test_runs/test_data/test_compactor.tsv # compactor output file
 
 # Load the environment
 source /oak/stanford/groups/horence/juliew/envs/structure_run/bin/activate
