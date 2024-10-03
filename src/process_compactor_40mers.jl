@@ -1,27 +1,47 @@
+# The file takes in two argements: 
+# 1. Compactor output from SPLASH 
+# 2. Directory to save output
+
 using Combinatorics
 using DataFrames
 using CSV
 
 # trim string 
-function trim_compactor(input::AbstractString)
-    return input[1:length(input)-1]
+function trim_compactor(input::AbstractString, anchor_len::Int)
+    return input[anchor_len+1:end]
+end
+
+# precompute parsing indices
+function precompute_idx(input::AbstractString, seg_num::Int)
+    len = length(input)
+    base_len, extra = divrem(len, seg_num)
+    seg_lengths = fill(base_len, seg_num)
+    seg_lengths[1:extra] .+= 1  # Distribute the extra characters to the first segments
+
+    # Compute start and end indices
+    indices = cumsum([1; seg_lengths])
+    # segments = [input[indices[i]:indices[i+1]-1] for i in 1:seg_num]
+    return indices
 end
 
 # parse string
-function parse_string(input::AbstractString, segment_length::Int)
-    seg_num = Int(80/segment_length)
-    segments = Vector{String}(undef, seg_num)
-    for i in 1:seg_num
-        start_idx = (i - 1) * segment_length + 1
-        end_idx = i * segment_length
-        segments[i] = input[start_idx:end_idx]
-    end
+function parse_string(input::AbstractString, seg_num::Int, indices)
+    # len = length(input)
+    # base_len, extra = divrem(len, seg_num)
+    # seg_lengths = fill(base_len, seg_num)
+    # seg_lengths[1:extra] .+= 1  # Distribute the extra characters to the first segments
+
+    # # Compute start and end indices
+    # indices = cumsum([1; seg_lengths])
+    segments = [input[indices[i]:indices[i+1]-1] for i in 1:seg_num]
     return segments
 end
 
 # combine segments based on index_comb
-function string_combinations(input::AbstractString, index_comb::Vector{Vector{Int}}, segment_length::Int)
-    strings = parse_string(trim_compactor(input), segment_length)
+function string_combinations(input::AbstractString, anchor_len::Int, index_comb::Vector{Vector{Int}}, seg_num::Int)
+    trimmed_input = trim_compactor(input, anchor_len)
+    indices = precompute_idx(trimmed_input, seg_num)
+    strings = parse_string(trimmed_input, seg_num, indices)
     scrambled_list = []
     for comb in index_comb
         push!(scrambled_list, (strings[comb[1]] * strings[comb[2]], strings[comb[3]] * strings[comb[4]]))
@@ -48,19 +68,23 @@ function main()
     # read in the compactor file
     df =  CSV.read(ARGS[1], DataFrame, delim='\t', header=true)
 
-    # select compactor length of 81
-    select!(df, :, [:compactor] => ByRow(length) => [:length])
-    df = df[df.length .== 81, :]
-    select!(df,Not(:length))
+    # get anchor length
+    anchor_len = length(df[1,1])
 
     # Add compactor rank (sorted by support descendingly) to a new column. 
     transform!(groupby(df, [:anchor,]), [:support => sortperm_rev => :support_rank])
+
+    # filter out anchors whose 2nd most abundant compactor has support < 2
+    anchors_to_remove = unique(df[[(row.support_rank == 2 && row.support < 2) for row in eachrow(df)], :anchor])
+    df = filter(row -> !(row.anchor in anchors_to_remove), df)
 
     # generate scrambled compactor segments, indexed as <Destruction><No.><Combination><No.> and stack them into a new column 'segment
     index_comb = [[1, 2, 3, 4], 
                   [1, 3, 2, 4], 
                   [1, 4, 2, 3]] 
-    transform!(df, :, :compactor => ByRow(x -> string_combinations(x, index_comb, 20)) => [:D1, :D2, :D3])
+    seg_num = 4
+
+    transform!(df, :, :compactor => ByRow(x -> string_combinations(x, anchor_len, index_comb, seg_num)) => [:D1, :D2, :D3])
     pivoted_df = stack(df, r"D")
     rename!(pivoted_df, Dict(:variable => :segment_index, :value => :segment))
 
@@ -86,6 +110,7 @@ function main()
     out_file = string(ARGS[2], "/", "processed_compactors_40mers.tsv")
     CSV.write(out_file, pivoted_df, delim='\t')
 end
+
 
 main()
 

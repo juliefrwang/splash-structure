@@ -37,7 +37,7 @@ def main():
 
     """ Step 1: Read in compactors and process dataframe using Julia script """
     # Define the command to run the Julia script
-    julia_command = f"julia /oak/stanford/groups/horence/juliew/structure/src/process_compactor_40mers_0906.jl {COMPACTOR_FILE} {outfolder}/int_file"
+    julia_command = f"julia /oak/stanford/groups/horence/juliew/structure/src/process_compactor_40mers.jl {COMPACTOR_FILE} {outfolder}/int_file"
 
     # Run the Julia script using subprocess and wait for it to finish
     completed_process = subprocess.run(julia_command, shell=True)

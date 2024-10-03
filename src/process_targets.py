@@ -85,7 +85,7 @@ def process_row(row):
                            "base_target": row["most_freq_target_1"], 
                            "target": target_list, 
                            "target_count": cnt_list,
-                           "target_wgt_M": cnt_list/row["M"]})
+                           "target_wgt": np.array(cnt_list)/(sum(cnt_list) + row["cnt_most_freq_target_1"])})
     return new_df
 
 def process_df(df, wgt_thres=0.05, stemL=5):
@@ -115,7 +115,7 @@ def process_df(df, wgt_thres=0.05, stemL=5):
     # filter target abundance >.05
     df = df.loc[df['target_wgt_M'] > .05].reset_index(drop=True)
     
-    # calculate target_weight
+    # recalculate target_weight (exclude cnts of base target)
     # df["tar_wgt_unfiltered"] = df["target_count"] / df.groupby("anchor")["target_count"].transform(sum)
     df["tar_wgt_filtered"] = df["target_count"] / df.groupby("anchor")["target_count"].transform(sum)
     

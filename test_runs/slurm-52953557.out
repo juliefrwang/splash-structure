@@ -1,0 +1,25 @@
+INFO: Pandarallel will run on 128 workers.
+INFO: Pandarallel will use Memory file system to transfer data between the main process and workers.
+
+real	1m23.588s
+user	0m2.462s
+sys	0m1.382s
+INFO: Pandarallel will run on 128 workers.
+INFO: Pandarallel will use Memory file system to transfer data between the main process and workers.
+Traceback (most recent call last):
+  File "/oak/stanford/groups/horence/juliew/structure/scripts/main_structure_compactor_40mers.py", line 129, in <module>
+    main()
+  File "/oak/stanford/groups/horence/juliew/structure/scripts/main_structure_compactor_40mers.py", line 72, in main
+    df[["totaMut_1", "stemMut_1", "compMut_1", "strucNotation_1"]] = pd.DataFrame(df.parallel_apply(lambda x: find_comp_mut.find_mutation(x.base_S1, \
+  File "/oak/stanford/groups/horence/juliew/envs/structure_run/lib/python3.9/site-packages/pandarallel/core.py", line 294, in closure
+    pool = CONTEXT.Pool(nb_workers)
+  File "/share/software/user/open/python/3.9.0/lib/python3.9/multiprocessing/context.py", line 119, in Pool
+    return Pool(processes, initializer, initargs, maxtasksperchild,
+  File "/share/software/user/open/python/3.9.0/lib/python3.9/multiprocessing/pool.py", line 205, in __init__
+    raise ValueError("Number of processes must be at least 1")
+ValueError: Number of processes must be at least 1
+
+real	1m48.349s
+user	0m8.800s
+sys	0m1.609s
+Error: Structure on compactor_40 for juliew failed with status 1
