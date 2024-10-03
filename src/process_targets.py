@@ -67,8 +67,9 @@ def process_row(row):
     8. base_target (same for all rows)
     9. target (different for each row)
     10. target_count (different for each row)
-    11. target_wgt_M (different for each row): target_count / M
-    """
+    11. target_wgt (different for each row): target_count / sum(up to top 10 target_counts)
+    12. tar_wgt_filtered (different for each row): after abundance filtering, reweight targets, excluding base target
+"""
     
     # obtain the target list and its counts. 
     # Filter index names by regex and drop '-' target.
@@ -113,7 +114,7 @@ def process_df(df, wgt_thres=0.05, stemL=5):
     df = pd.concat(df_processed.to_list(), ignore_index=True)
     
     # filter target abundance >.05
-    df = df.loc[df['target_wgt_M'] > .05].reset_index(drop=True)
+    df = df.loc[df['target_wgt'] > .05].reset_index(drop=True)
     
     # recalculate target_weight (exclude cnts of base target)
     # df["tar_wgt_unfiltered"] = df["target_count"] / df.groupby("anchor")["target_count"].transform(sum)

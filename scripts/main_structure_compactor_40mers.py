@@ -50,10 +50,11 @@ def main():
         print("Julia script encountered an error or did not finish successfully.")
         sys.exit(1)
 
-    # exit program if no structure is found in any target
+    # exit program if no compactor is left after abundance filtering
     if len(df) == 0:
         print("No structure is found for any anchor. Exiting..")
         return
+
     """ 
     Step 3: Find parameters that are to be used in anchor-p computation, 
     along with three types of notations
@@ -67,6 +68,11 @@ def main():
 
     # drop anchors without stem using condition num_stem_loop == 0 
     df = df[df.num_stem_loop != 0].reset_index(drop = True)
+
+    # exit program if no structure is found in any target
+    if len(df) == 0:
+        print("No structure is found for any anchor. Exiting...")
+        return
 
     # find mutations in stem & addition two columns for structure notations
     df[["totaMut_1", "stemMut_1", "compMut_1", "strucNotation_1"]] = pd.DataFrame(df.parallel_apply(lambda x: find_comp_mut.find_mutation(x.base_S1, \
