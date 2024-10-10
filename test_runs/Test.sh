@@ -16,31 +16,28 @@ echo "Results Directory: ${RESULTS_DIR}"
 echo "SPLASH Output File: ${SPLASH_OUT_FILE}"
 echo "Compactor File: ${COMPACTOR_FILE}"
 
-# Load the environment
-source /oak/stanford/groups/horence/juliew/envs/structure_run/bin/activate
-
 # Go to the results directory
 cd $BASE_DIR
 
 # run structure on target
-time python3 /oak/stanford/groups/horence/juliew/github/splash-structure/scripts/main_structure_target.py $SPLASH_OUT_FILE $DATA_HANDLE &
-pid1=$!
+# time python3 /oak/stanford/groups/horence/juliew/github/splash-structure/scripts/structure_target_mode.py $SPLASH_OUT_FILE $DATA_HANDLE &
+# pid1=$!
 # run structure on compactor 40 mers
-time python3 /oak/stanford/groups/horence/juliew/github/splash-structure/scripts/main_structure_compactor_40mers.py $COMPACTOR_FILE $DATA_HANDLE &
+time python3 /oak/stanford/groups/horence/juliew/github/splash-structure/scripts/structure_compactor_mode.py $COMPACTOR_FILE $DATA_HANDLE &
 pid2=$!
 
 
 # wait for all programs to finish 
-wait $pid1
-status1=$?
+# wait $pid1
+# status1=$?
 wait $pid2
 status2=$?
 
 # check the status of all python jobs
-if [ $status1 -ne 0 ]; then
-    echo "Error: Structure on target for $DATA_HANDLE failed with status $status1"
-    exit 1
-fi
+#if [ $status1 -ne 0 ]; then
+#    echo "Error: Structure on target for $DATA_HANDLE failed with status $status1"
+#    exit 1
+#fi
 
 if [ $status2 -ne 0 ]; then
     echo "Error: Structure on compactor_40 for $DATA_HANDLE failed with status $status2"

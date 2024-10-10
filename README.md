@@ -40,6 +40,6 @@ File `test_runs/Test.sh` contains the commands to run SPLASH-structure on the te
 # Make sure to navigate to the test_runs directory
 cd test_runs
 
-# Run the test script (it will automatically source the environment)
+# Run the test script 
 ./Test.sh
 ```

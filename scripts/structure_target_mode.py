@@ -13,23 +13,16 @@ import pandas as pd
 from statsmodels.stats.multitest import multipletests
 from pandarallel import pandarallel
 
-sys.path.append('/oak/stanford/groups/horence/juliew/structure/src')
+relative_path = '../src'
+absolute_path = os.path.abspath(relative_path)
+sys.path.append(absolute_path)
 import process_targets
 import find_comp_mut
 import get_pval
 import elem_annas
 
-# Parse command line arguments
-parser = argparse.ArgumentParser(description='Run SPLASH-structure on target.')
-parser.add_argument("-a", "--element_annotation", action="store_true", help="Run element annotation on extendors. Default is False", )
-parser.add_argument("splash_output_file", help="Path to SPLASH significant anchors output file.")
-parser.add_argument("data_handle", help="Data handle for the output folder.")
-args = parser.parse_args()
-SPLASH_OUTPUT_FILE = args.splash_output_file
-DATA_HANDLE = args.data_handle
+def SS_target(DATA_HANDLE, SPLASH_OUTPUT_FILE, EA):
 
-def main():
-    
     """ Step 0: Preparation """
     # Initialize parallelization. Create folder to save results
     pandarallel.initialize()
@@ -78,7 +71,7 @@ def main():
     """ Step 7: Save """
     df.to_csv(f'{outfolder}/structure_on_targets.tsv', index=False, sep='\t')
 
-    if args.element_annotation:
+    if EA:
         """ Step 8: elememt annotations (optional, toggle on by -a) """
         # run element annotations
         elem_ann_folder = elem_annas.run_anns(outfolder, "extendor")
@@ -89,4 +82,15 @@ def main():
         df = elem_annas.merge_anns_struc(df_anns, df)
         df.to_csv(f'{outfolder}/structure_on_targets.tsv', index=False, sep='\t')
 
-main()
+
+if __name__ == "__main__":
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Run SPLASH-structure on target.')
+    parser.add_argument("-a", "--element_annotation", action="store_true", help="Run element annotation on extendors. Default is False", )
+    parser.add_argument("splash_output_file", help="Path to SPLASH significant anchors output file.")
+    parser.add_argument("data_handle", help="Data handle for the output folder.")
+    args = parser.parse_args()
+    SPLASH_OUTPUT_FILE = args.splash_output_file
+    DATA_HANDLE = args.data_handle
+
+    SS_target(DATA_HANDLE, SPLASH_OUTPUT_FILE, EA=args.element_annotation)

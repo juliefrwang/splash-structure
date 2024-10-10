@@ -4,7 +4,9 @@ from statsmodels.stats.multitest import multipletests
 import pandas as pd
 from multiprocessing import Pool
 
-sys.path.append('/oak/stanford/groups/horence/juliew/structure/src')
+relative_path = '../src'
+absolute_path = os.path.abspath(relative_path)
+sys.path.append(absolute_path)
 import simulate_target
 import structure_plot
 

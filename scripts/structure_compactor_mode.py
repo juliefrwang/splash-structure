@@ -12,22 +12,16 @@ import subprocess
 from statsmodels.stats.multitest import multipletests
 from pandarallel import pandarallel
 
-sys.path.append('/oak/stanford/groups/horence/juliew/structure/src')
+relative_path = '../src'
+absolute_path = os.path.abspath(relative_path)
+sys.path.append(absolute_path)
 import process_targets
 import find_comp_mut
 import get_pval
 import elem_annas
 
-# Parse command line arguments
-parser = argparse.ArgumentParser(description='Run SPLASH-structure on compactor_40.')
-parser.add_argument("-a", "--element_annotation", action="store_true", help="Run element annotation on compactors. Default is False", )
-parser.add_argument("compactor_file", help="Path to compactors file.")
-parser.add_argument("data_handle", help="Data handle for the output folder")
-args = parser.parse_args()
-COMPACTOR_FILE = args.compactor_file
-DATA_HANDLE = args.data_handle
 
-def main():
+def SS_compactor(DATA_HANDLE, COMPACTOR_FILE, EA):
     """ Step 0: Preparation """
     # Initialize parallelization. Create folder to save results
     pandarallel.initialize()
@@ -121,7 +115,7 @@ def main():
     """ Step 8: SAVE """
     df.to_csv(f'{outfolder}/structure_on_compactors_40mers.tsv', index=False, sep='\t')
 
-    if args.element_annotation:
+    if EA:
         """ Step 9: elememt annotations (optional, toggle on by -a)  """
         # run element annotations
         elem_ann_folder = elem_annas.run_anns(outfolder, "compactor", 40)
@@ -132,4 +126,16 @@ def main():
         df = elem_annas.merge_anns_struc(df_anns, df, "compactor")
         df.to_csv(f'{outfolder}/structure_on_compactors_40mers.tsv', index=False, sep='\t')
 
-main()
+
+if __name__ == "__main__":
+    # Parse command line arguments
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Run SPLASH-structure on compactor_40.')
+    parser.add_argument("-a", "--element_annotation", action="store_true", help="Run element annotation on compactors. Default is False.", )
+    parser.add_argument("compactor_file", help="Path to compactors file.")
+    parser.add_argument("data_handle", help="Data handle for the output folder")
+    args = parser.parse_args()
+    COMPACTOR_FILE = args.compactor_file
+    DATA_HANDLE = args.data_handle
+
+    SS_compactor(DATA_HANDLE, COMPACTOR_FILE, EA=args.element_annotation)
