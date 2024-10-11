@@ -13,25 +13,23 @@ import pandas as pd
 from statsmodels.stats.multitest import multipletests
 from pandarallel import pandarallel
 
-relative_path = '../src'
-absolute_path = os.path.abspath(relative_path)
-sys.path.append(absolute_path)
-import process_targets
-import find_comp_mut
-import get_pval
-import elem_annas
+from splash_structure_py.src.parse_args import *
+from splash_structure_py.src.process_targets import *
+import splash_structure_py.src.find_comp_mut as find_comp_mut
+import splash_structure_py.src.get_pval as get_pval
+import splash_structure_py.src.elem_annas as elem_annas
 
-def SS_target(DATA_HANDLE, SPLASH_OUTPUT_FILE, EA):
+def SS_target(output_prefix, splash_output_file, element_annotation):
 
     """ Step 0: Preparation """
     # Initialize parallelization. Create folder to save results
     pandarallel.initialize()
-    outfolder = f'{DATA_HANDLE}_results'
+    outfolder = f'{output_prefix}_results'
     os.makedirs(outfolder, exist_ok=True)
     
     """ Step 1: Read in the input file and process dataframe to get base targets and targets """
-    df = pd.read_csv(SPLASH_OUTPUT_FILE, sep = '\t')
-    df = process_targets.process_df(df)
+    df = pd.read_csv(splash_output_file, sep = '\t')
+    df = process_df(df)
     # exit program if no structure is found in any target
     if len(df) == 0:
         print("No structure is found for any anchor. Exiting..")
@@ -71,7 +69,7 @@ def SS_target(DATA_HANDLE, SPLASH_OUTPUT_FILE, EA):
     """ Step 7: Save """
     df.to_csv(f'{outfolder}/structure_on_targets.tsv', index=False, sep='\t')
 
-    if EA:
+    if element_annotation:
         """ Step 8: elememt annotations (optional, toggle on by -a) """
         # run element annotations
         elem_ann_folder = elem_annas.run_anns(outfolder, "extendor")
@@ -82,15 +80,11 @@ def SS_target(DATA_HANDLE, SPLASH_OUTPUT_FILE, EA):
         df = elem_annas.merge_anns_struc(df_anns, df)
         df.to_csv(f'{outfolder}/structure_on_targets.tsv', index=False, sep='\t')
 
+def run_SS_target():
+    arguments = argument_parser_target()
+    SS_target(**arguments)
 
 if __name__ == "__main__":
-    # Parse command line arguments
-    parser = argparse.ArgumentParser(description='Run SPLASH-structure on target.')
-    parser.add_argument("-a", "--element_annotation", action="store_true", help="Run element annotation on extendors. Default is False", )
-    parser.add_argument("splash_output_file", help="Path to SPLASH significant anchors output file.")
-    parser.add_argument("data_handle", help="Data handle for the output folder.")
-    args = parser.parse_args()
-    SPLASH_OUTPUT_FILE = args.splash_output_file
-    DATA_HANDLE = args.data_handle
+    arguments = argument_parser_target()
+    SS_target(**arguments)
 
-    SS_target(DATA_HANDLE, SPLASH_OUTPUT_FILE, EA=args.element_annotation)

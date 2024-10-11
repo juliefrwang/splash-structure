@@ -117,8 +117,7 @@ def process_df(df, wgt_thres=0.05, stemL=5):
     df = df.loc[df['target_wgt'] > .05].reset_index(drop=True)
     
     # recalculate target_weight (exclude cnts of base target)
-    # df["tar_wgt_unfiltered"] = df["target_count"] / df.groupby("anchor")["target_count"].transform(sum)
-    df["tar_wgt_filtered"] = df["target_count"] / df.groupby("anchor")["target_count"].transform(sum)
+    df["tar_wgt_filtered"] = df["target_count"] / df.groupby("anchor")["target_count"].transform("sum")
     
     return df
 

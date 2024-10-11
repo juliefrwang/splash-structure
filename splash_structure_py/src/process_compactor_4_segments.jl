@@ -89,17 +89,17 @@ function main()
     rename!(pivoted_df, Dict(:variable => :segment_index, :value => :segment))
 
     # get target weight 
-    transform!(groupby(pivoted_df, [:anchor, :segment_index]), [:support => get_wgt => :target_weight])
+    transform!(groupby(pivoted_df, [:anchor, :segment_index]), [:support => get_wgt => :compactor_weight])
     
     # filter compactor abundance >.05
-    filter!(pivoted_df -> pivoted_df.target_weight .>= 0.05, pivoted_df)
+    filter!(pivoted_df -> pivoted_df.compactor_weight .>= 0.05, pivoted_df)
 
     # add 'base_target' column and filter rows to remove those where 'base_target' is equal to 'segment'.
     transform!(groupby(pivoted_df, [:anchor, :segment_index]), [[:segment, :support_rank] => get_base_target => :base_target])
     filter!(pivoted_df -> pivoted_df.base_target != pivoted_df.segment, pivoted_df)
     
-    # Recalculate 'target_weight' after filtering, grouping by 'anchor' and 'segment_index'.
-    transform!(groupby(pivoted_df, [:anchor, :segment_index]), [:support => get_wgt => :target_weight])
+    # Recalculate 'compactor_weight' after filtering, grouping by 'anchor' and 'segment_index'.
+    transform!(groupby(pivoted_df, [:anchor, :segment_index]), [:support => get_wgt => :compactor_weight])
         
     # place base_target tuple and segment tuple to seperate columns
     transform!(pivoted_df, :segment => ByRow(x -> (x[1], x[2])) => [:S1, :S2])
@@ -107,7 +107,7 @@ function main()
     select!(pivoted_df, Not([:segment, :base_target]))
     
     # write tsv 
-    out_file = string(ARGS[2], "/", "processed_compactors_40mers.tsv")
+    out_file = string(ARGS[2], "/", "processed_compactors.tsv")
     CSV.write(out_file, pivoted_df, delim='\t')
 end
 

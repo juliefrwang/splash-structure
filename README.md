@@ -1,45 +1,75 @@
 # Splash-structure
 
-## 1. Setting up the Python Environment
+SPLASH-structure is a statistical tool that predicts RNA secondary structures without the need for multiple sequence alignment (MSA).
 
-First, ensure you have Python `>= 3.9` installed. Then, follow these steps:
+## Setting up the Python Environment
+
+It is recommended to use a virtual environment to manage dependencies. Ensure you have Python `>= 3.9` installed. Then, follow these steps:
 
 ```bash
-# Clone the repository
-git clone https://github.com/juliefrwang/splash-structure.git
-cd splash-structure
-
 # Create a virtual environment (you can replace 'my_env' with any name)
 python3 -m venv my_env
 
 # Activate the virtual environment
-# For Linux/Mac:
 source my_env/bin/activate
-
-# Install the required dependencies
-pip install -r requirements.txt
 ```
-## 2. Installing Julia programming language
 
-Make sure Julia is installed on your system. You can download and install Julia from the official website: https://julialang.org/downloads/.
+## Installing SPLASH-structure
+You can install SPLASH-structure by cloning the repository and using pip to install the package and its dependencies:
 
+```bash
+# Clone the repository
+git clone https://github.com/juliefrwang/splash-structure.git
+
+# Navigate to the project directory
+cd splash-structure
+
+# Install the package
+pip install .
+```
+
+## Installing Julia programming language
+SPLASH-structure relies on Julia for some computations. Follow the steps below to install Julia and set up the required packages.
+
+### Installing Julia
+You can download and install Julia from the official website: https://julialang.org/downloads/.
 After installing, verify your Julia installation:
 ```bash
 julia --version
 ```
-To install the required Julia packages for this project, run:
+
+### Installing Julia Packages
+Install the required Julia packages for this project, run:
 ```bash
 julia -e 'using Pkg; Pkg.add("DataFrames"); Pkg.add("CSV"); Pkg.add("Combinatorics")'
 ```
-__Note__: This method for installing Julia packages is tentative and will be updated in the future.
 
-## 3. Running SPLASH-strucure on test data
-
-File `test_runs/Test.sh` contains the commands to run SPLASH-structure on the test data, under both target mode and compactor mode. To run the test data, execute the following command:
+## Usage
+After installation, you can run SPLASH-structure directly from the command line. SPLASH-structure provides two handy commands: `ss-target` for executing target mode and `ss-compactor` for running compactor mode.
+### Target mode syntax:
 ```bash
-# Make sure to navigate to the test_runs directory
-cd test_runs
-
-# Run the test script 
-./Test.sh
+ss-target <splash_output_file> <output_prefix>
 ```
+__Positional Arguments__
+1. `<splash_output_file>`: Path to the splash output file.
+2. `<output_prefix>`: Prefix for naming the output result folder. 
+
+### Compactor mode syntax:
+```bash
+ss-compactor <compactor_file> <output_prefix>
+```
+__Positional Arguments__
+1. `<compactor_file>`:Path to the compactor file.
+2. `<output_prefix>`: Prefix for naming the output result folder.
+
+## Example runs on test data
+There are two files in `tests/test_data/`: `test.after_correction.scores.tsv`, a test SPLASH output file, and `test_compactor.tsv`, a test compactor file. To run SPLASH-structure from `splash-structure` folder with an output folder prefix `new_test`:
+### Run target mode
+```bash
+ss-target new_test tests/test_data/test.after_correction.scores.tsv
+```
+### Run compactor mode
+```bash
+ss-compactor new_test tests/test_data/test.compactor.tsv
+```
+The output will be saved in the `new_test_results` folder. The file `structure_on_targets.tsv` contains the target mode results, and `structure_on_compactors.tsv` contains the compactor mode results. The subfolder `interm_compactor` contains an intermediate file for processed compactors before the algorithm searches for compensatory stems.

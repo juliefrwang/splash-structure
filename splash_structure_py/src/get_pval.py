@@ -140,7 +140,7 @@ def anchor_p_compactor_subdf(sub_df):
     if len(sub_df) > 1:
         # structure evaluation length for compactor is 80 (HARDCODED)
         all_anchor_outcomes, anchor_pmf = pmf_anchor_score(*prep_for_conv(len(sub_df),\
-                                                      list(sub_df['target_weight']), \
+                                                      list(sub_df['compactor_weight']), \
                                                       80, \
                                                       list(sub_df['stemL']), \
                                                       list(sub_df['totaMut'])))

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "splash-structure"
+version = "0.0.1"
+authors = [
+  { name="Julie Fangran Wang", email="frwang@stanford.edu" },
+]
+description = "SPLASH-structure is a statistical tool that predicts RNA secondary structure bypassing MSA."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3.9",
+]
+dependencies = [
+  "matplotlib>=3.7.1",
+  "numpy>=1.24.3",
+  "pandarallel==1.6.5",
+  "pandas>=2.0.1",
+  "seaborn>=0.13.2",
+  "statsmodels>=0.14.0",
+]
+
+[project.scripts]
+ss-target = "splash_structure_py.structure_target_mode:run_SS_target"
+ss-compactor = "splash_structure_py.structure_compactor_mode:run_SS_compactor"
+
+[tool.setuptools.packages.find]
+include = ["splash_structure_py"]
