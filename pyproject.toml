@@ -28,4 +28,4 @@ ss-target = "splash_structure_py.structure_target_mode:run_SS_target"
 ss-compactor = "splash_structure_py.structure_compactor_mode:run_SS_compactor"
 
 [tool.setuptools.packages.find]
-include = ["splash_structure_py"]
+include = ["splash_structure_py","splash_structure_py.src"]
