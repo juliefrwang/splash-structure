@@ -51,7 +51,7 @@ After installation, you can run SPLASH-structure directly from the command line.
 ss-target <splash_output_file> <output_prefix>
 ```
 __Positional Arguments__
-1. `<splash_output_file>`: Path to the splash output file.
+1. `<splash_output_file>`: Path to the SPLASH output file. For SPLASH, please see: https://github.com/refresh-bio/SPLASH.
 2. `<output_prefix>`: Prefix for naming the output result folder. 
 
 ### Compactor mode syntax:
