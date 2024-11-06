@@ -1,4 +1,4 @@
-# Splash-structure
+# STRUCTURAL (previously named as SPLASH-structure)
 
 SPLASH-structure is a statistical tool that predicts RNA secondary structures without the need for multiple sequence alignment (MSA).
 
