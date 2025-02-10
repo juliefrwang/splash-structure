@@ -1,6 +1,6 @@
-# STRUCTURAL (previously named as SPLASH-structure)
+# STRUCT (previously named as SPLASH-structure)
 
-SPLASH-structure is a statistical tool that predicts RNA secondary structures without the need for multiple sequence alignment (MSA).
+STRUCT is a statistical tool that predicts RNA secondary structures without the need for multiple sequence alignment (MSA).
 
 ## Setting up the Python Environment
 
@@ -14,8 +14,8 @@ python3 -m venv my_env
 source my_env/bin/activate
 ```
 
-## Installing SPLASH-structure
-You can install SPLASH-structure by cloning the repository and using pip to install the package and its dependencies:
+## Installing STRUCT
+You can install STRUCT by cloning the repository and using pip to install the package and its dependencies:
 
 ```bash
 # Clone the repository
@@ -29,7 +29,7 @@ pip install .
 ```
 
 ## Installing Julia programming language
-SPLASH-structure relies on Julia for some computations. Follow the steps below to install Julia and set up the required packages.
+STRUCT relies on Julia for some computations. Follow the steps below to install Julia and set up the required packages.
 
 ### Installing Julia
 You can download and install Julia from the official website: https://julialang.org/downloads/.
@@ -45,7 +45,7 @@ julia -e 'using Pkg; Pkg.add("DataFrames"); Pkg.add("CSV"); Pkg.add("Combinatori
 ```
 
 ## Usage
-After installation, you can run SPLASH-structure directly from the command line. SPLASH-structure provides two handy commands: `ss-target` for executing target mode and `ss-compactor` for running compactor mode.
+After installation, you can run STRUCT directly from the command line. STRUCT provides two handy commands: `ss-target` for executing target mode and `ss-compactor` for running compactor mode.
 ### Target mode syntax:
 ```bash
 ss-target <splash_output_file> <output_prefix>
@@ -63,7 +63,7 @@ __Positional Arguments__
 2. `<output_prefix>`: Prefix for naming the output result folder.
 
 ## Example runs on test data
-There are two files in `tests/test_data/`: `test.after_correction.scores.tsv`, a test SPLASH output file, and `test_compactor.tsv`, a test compactor file. To run SPLASH-structure from `splash-structure` folder with an output folder prefix `new_test`:
+There are two files in `tests/test_data/`: `test.after_correction.scores.tsv`, a test SPLASH output file, and `test_compactor.tsv`, a test compactor file. To run STRUCT from `splash-structure` folder with an output folder prefix `new_test`:
 ### Run target mode
 ```bash
 ss-target new_test tests/test_data/test.after_correction.scores.tsv
