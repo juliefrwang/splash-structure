@@ -22,10 +22,6 @@ def argument_parser_target():
                              "legacy WCF-only path, byte-identical to "
                              "prior versions. This single flag both gates "
                              "and parameterizes the extension.")
-    parser.add_argument("--wobble", action="store_true",
-                        help="DEPRECATED alias for '--noncanon GU'. Kept "
-                             "for one release; prefer --noncanon. Ignored "
-                             "if --noncanon is given explicitly.")
     parser.add_argument("--titv", type=float, default=0.5,
                         help="Aggregate Ti/Tv event ratio (= #Ti / #Tv) "
                              "assumed by the SVP/BPC null. Default 0.5 "
@@ -33,7 +29,7 @@ def argument_parser_target():
                              "original published model. Biological data "
                              "typically sits near 2.0; pass --titv 2 to "
                              "match such samples. Only consumed when the "
-                             "extension is active (--noncanon / --wobble).")
+                             "extension is active (--noncanon).")
 
     arguments = parser.parse_args()
 
@@ -61,10 +57,6 @@ def argument_parser_compactor():
                              "legacy WCF-only path, byte-identical to "
                              "prior versions. This single flag both gates "
                              "and parameterizes the extension.")
-    parser.add_argument("--wobble", action="store_true",
-                        help="DEPRECATED alias for '--noncanon GU'. Kept "
-                             "for one release; prefer --noncanon. Ignored "
-                             "if --noncanon is given explicitly.")
     parser.add_argument("--titv", type=float, default=0.5,
                         help="Aggregate Ti/Tv event ratio (= #Ti / #Tv) "
                              "assumed by the SVP/BPC null. Default 0.5 "
@@ -72,7 +64,7 @@ def argument_parser_compactor():
                              "original published model. Biological data "
                              "typically sits near 2.0; pass --titv 2 to "
                              "match such samples. Only consumed when the "
-                             "extension is active (--noncanon / --wobble).")
+                             "extension is active (--noncanon).")
 
     arguments = parser.parse_args()
 

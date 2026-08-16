@@ -21,16 +21,14 @@ import struct_rna.src.elem_annas as elem_annas
 
 
 def SS_compactor(output_prefix, compactor_file, element_annotation,
-                 wobble=False, titv=0.5, noncanon=None):
+                 titv=0.5, noncanon=None):
     """ Step 0: Preparation """
     # Resolve the non-canonical specification (gate folded into
-    # `noncanon`, mirroring SS_target). Backward compat: if `noncanon`
-    # is not given explicitly, derive it from the legacy `wobble` bool.
-    #   noncanon given          -> use it (gate + parameterize)
-    #   noncanon None, wobble=T -> "GU"  (== old --wobble behaviour)
-    #   noncanon None, wobble=F -> "none" (legacy WCF-only path)
+    # `noncanon`, mirroring SS_target).
+    #   noncanon given   -> use it (gate + parameterize)
+    #   noncanon omitted -> "none" (legacy WCF-only path)
     if noncanon is None:
-        noncanon = "GU" if wobble else "none"
+        noncanon = "none"
     extended = str(noncanon).strip().lower() not in {"none", ""}
     valid = build_valid_set(noncanon) if extended else None
 

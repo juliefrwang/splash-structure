@@ -116,7 +116,7 @@ def find_mutation_ext(base, target,
     Notes
     -----
     The original ``find_mutation`` is left untouched; this function is
-    introduced behind the Phase 4 ``--wobble`` CLI flag.
+    introduced behind the ``--noncanon`` CLI flag.
 
     No-stem sentinel: compactor mode calls this function on each of the
     two recombined halves, including halves where the stem-finder

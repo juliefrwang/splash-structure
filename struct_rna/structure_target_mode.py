@@ -21,18 +21,15 @@ import struct_rna.src.get_pval as get_pval
 import struct_rna.src.elem_annas as elem_annas
 
 def SS_target(output_prefix, splash_output_file, element_annotation,
-              wobble=False, titv=0.5, noncanon=None):
+              titv=0.5, noncanon=None):
 
     """ Step 0: Preparation """
     # Resolve the non-canonical specification (decision D3 — the gate is
-    # folded into `noncanon`). Backward compat: if `noncanon` is not given
-    # explicitly, derive it from the legacy `wobble` bool so existing
-    # callers/tests are byte-identical.
-    #   noncanon given          -> use it (gate + parameterize)
-    #   noncanon None, wobble=T -> "GU"  (== old --wobble behaviour)
-    #   noncanon None, wobble=F -> "none" (legacy WCF-only path)
+    # folded into `noncanon`).
+    #   noncanon given   -> use it (gate + parameterize)
+    #   noncanon omitted -> "none" (legacy WCF-only path)
     if noncanon is None:
-        noncanon = "GU" if wobble else "none"
+        noncanon = "none"
     extended = str(noncanon).strip().lower() not in {"none", ""}
     valid = build_valid_set(noncanon) if extended else None
 
