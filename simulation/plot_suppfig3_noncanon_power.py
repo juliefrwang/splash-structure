@@ -1,11 +1,10 @@
-"""E2 plotter including the two extra WCF-involving configs
-(none/GU and GU/none) alongside the original seven. Mirror of
-plot_e2.py — same data source, same axes, same styling convention —
-but adds two more series.
+"""Supplementary Figure 3: power across the (data-N, test-N)
+configurations, including the WCF-involving ones (none/GU and GU/none)
+alongside the seven that involve G.U and/or G.A.
 
 Run:
     python \\
-        -m simulation.plot_e2_with_wcf
+        -m simulation.plot_suppfig3_noncanon_power
 """
 from __future__ import annotations
 
@@ -21,7 +20,7 @@ DATA = Path(__file__).resolve().parents[0]
 CSV = DATA / "results" / "e2_noncanon" / "grid_summary.csv"
 FIG_DIR = DATA / "figures" / "e2_noncanon"
 
-# (config label, style). Same 7 as plot_e2.py, plus 2 WCF-involving rows
+# (config label, style). The 7 G.U / G.A configs, plus 2 WCF-involving rows
 # with distinct colors so they read as a separate family.
 SERIES = [
     # matched

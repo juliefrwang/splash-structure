@@ -5,26 +5,6 @@ directory, running against the STRUCT implementation in `struct_rna/` of this
 same repository. Each figure below lists the exact commands, seeds, and
 runtime.
 
-## Environment
-
-```bash
-git clone https://github.com/juliefrwang/STRUCT.git
-cd STRUCT
-pip install .
-pip install pandarallel matplotlib pandas numpy scipy
-```
-
-Pin the commit that produced the published figures:
-
-```bash
-git checkout <RELEASE_TAG>        # TODO: fill in the tagged release / Zenodo DOI
-```
-
-Run every command with `PYTHONHASHSEED=0`. STRUCT's valid-pair set is a
-`frozenset`, and set iteration order for string tuples varies between Python
-processes unless the hash seed is fixed. The simulator sorts that set
-internally (`simulation/core.py`), so results are reproducible either way, but
-fixing the hash seed removes the question.
 
 ## Figure 4 — calibration and power
 
@@ -49,7 +29,7 @@ PYTHONHASHSEED=0 python -m simulation.run_replicates --setting e3square --reps 1
 Then draw the figure:
 
 ```bash
-python -m simulation.plot_combined_sec22
+python -m simulation.plot_fig4_calibration_power
 ```
 
 Seeds are deterministic per (cell, replicate) and recorded in the `seed` column
@@ -69,14 +49,14 @@ R=1/2, 2500 anchors of each class, one run per cell. Both drivers append to the
 same summary file and must be run in this order. Measured runtime 13 min.
 
 ```bash
-PYTHONHASHSEED=0 python -m simulation.e2_grid             # seven configurations
-PYTHONHASHSEED=0 python -m simulation.e2_grid_extra_wcf   # three WCF-involving configurations
-python -m simulation.plot_e2_with_wcf
+PYTHONHASHSEED=0 python -m simulation.run_noncanon_grid             # seven configurations
+PYTHONHASHSEED=0 python -m simulation.run_noncanon_grid_wcf_configs   # three WCF-involving configurations
+python -m simulation.plot_suppfig3_noncanon_power
 ```
 
     seed = BASE_SEED + 1000 * index(v) + 13 * index(config)
 
-with `BASE_SEED = 2025` in `e2_grid.py` and `9090` in `e2_grid_extra_wcf.py`,
+with `BASE_SEED = 2025` in `run_noncanon_grid.py` and `9090` in `run_noncanon_grid_wcf_configs.py`,
 chosen so the two driver's seeds cannot collide.
 
 Table 2 reports power as flagged alternative anchors divided by the 2500
@@ -93,8 +73,8 @@ the commit, seeds, and package versions of the run. These are enough to redraw
 every figure without re-running the simulation:
 
 ```bash
-python -m simulation.plot_combined_sec22
-python -m simulation.plot_e2_with_wcf
+python -m simulation.plot_fig4_calibration_power
+python -m simulation.plot_suppfig3_noncanon_power
 ```
 
 Per-replicate anchor p-values and the synthetic SPLASH inputs are not committed.

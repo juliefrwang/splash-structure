@@ -144,7 +144,8 @@ def run_cell(
 
     ``data_noncanon`` is the non-canonical set planted in the data;
     ``test_noncanon`` is the set the test admits (SS_target ``noncanon``).
-    Their 2×2 (data uses N? × test admits N?) is the E2 design. Defaults
+    Their 2×2 (data uses N? × test admits N?) is the misspecification
+    design exercised by run_noncanon_grid.py. Defaults
     "GU"/"GU" reproduce the prior G·U behaviour.
     """
     out_dir = Path(out_dir)
@@ -220,7 +221,7 @@ def run_cell(
             "n": int(len(grp)),
         }
 
-    # --- E2 stratification by realized non-canonical count ---
+    # --- stratification by realized non-canonical count ---
     # meta `n_wobble` is the count of planted non-WCF pairs (= realized
     # n_nc under any N, since core._plant_once counts pairs ∉ V_WCF).
     # Binary stratum: stem contains ≥1 non-canonical pair vs all-WCF.

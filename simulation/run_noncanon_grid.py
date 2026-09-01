@@ -1,24 +1,22 @@
-"""E2 — two extra configurations bringing N=empty into the
-(data N, test N) sweep.
+"""Non-canonical pair set grid: power and FDR across (data-N, test-N).
 
-The existing E2 grid (e2_grid.py / results/e2_noncanon/) covers seven
-(data, test) configs that all involve GU and/or GA. Per discussion
-2026-05-25, we add two more configs that put N=empty on one side:
+7 configs (data_noncanon / test_noncanon) — GU is the shared baseline
+anchor; two 2×2 blocks (GA-vs-GU, GU,GA-vs-GU):
 
-    (data_noncanon, test_noncanon):
-      ("none", "GU")   - data uses strict WCF; test admits G·U.
-      ("GU",   "none") - data uses GU; test admits strict WCF only.
+    GU/GU      GA/GA   GA/GU   GU/GA
+               GU,GA/GU,GA   GU,GA/GU   GU/GU,GA
 
-Same K, v, abundance, R, and n_alt=n_null=2500 as the existing E2
-(matching the existing CSV's row schema). Appends to the same
-grid_summary.csv via the resume logic.
+× v ∈ {3,4,5,6,7}, K=5, uniform abundance, titv=0.5,
+n_alt=n_null=2500/cell.  35 cells.
 
-BASE_SEED bumped to avoid colliding with seeds used by the original
-seven configs.
+Per cell we record aggregate power/FDR AND the binary n_nc
+stratification (planted stem has ≥1 non-canonical pair vs all-WCF)
+plus the realized n_nc histogram, so the N-dependent cap-truncation
+is visible and power is comparable at matched composition.
 
-Run:
+Run from repo root:
     python \\
-        -m simulation.e2_grid_extra_wcf
+        -m simulation.run_noncanon_grid
 """
 from __future__ import annotations
 
@@ -37,18 +35,24 @@ if str(ROOT) not in sys.path:
 
 from simulation.runner import run_cell  # noqa: E402
 
+# (data_noncanon, test_noncanon)
 CONFIGS = [
-    ("none", "GU"),
-    ("GU",   "none"),
-    ("none", "none"),   # WCF-only matched baseline; added 2026-05-25
+    ("GU", "GU"),          # baseline anchor
+    ("GA", "GA"),          # matched single non-default
+    ("GA", "GU"),          # test-narrower (data GA, test GU)
+    ("GU", "GA"),          # test-wider (data GU, test GA)
+    ("GU,GA", "GU,GA"),    # matched multi-pair
+    ("GU,GA", "GU"),       # test-narrower (data GU,GA, test GU)
+    ("GU", "GU,GA"),       # test-wider (data GU, test GU,GA)
 ]
 V_VALUES = (3, 4, 5, 6, 7)
 K = 5
 ABUNDANCE = "uniform"
 N_ALT = N_NULL = 2500
+TITV = 0.5
 NB_WORKERS = 8
-BASE_SEED = 9090                       # distinct from e2_grid.py's BASE_SEED (2025)
-GRID_DIR = "e2_noncanon"               # share dir; append to the same CSV
+BASE_SEED = 2025
+GRID_DIR = "e2_noncanon"
 
 
 def _tag(dn, tn):
@@ -66,7 +70,7 @@ def main():
             for row in csv.DictReader(f):
                 done.add((row["data_noncanon"], row["test_noncanon"],
                           int(row["v"])))
-        print(f"Resuming: {len(done)} cells already complete in {summary_csv}")
+        print(f"Resuming: {len(done)} cells already complete")
 
     fieldnames = [
         "data_noncanon", "test_noncanon", "K", "v", "abundance",
@@ -84,16 +88,12 @@ def main():
 
     cells = [(dn, tn, v) for (dn, tn) in CONFIGS for v in V_VALUES]
     total = len(cells)
-    print(f"{len(CONFIGS)} new configs × {len(V_VALUES)} v = {total} cells")
     t0 = time.time()
 
     for i, (dn, tn, v) in enumerate(cells, start=1):
         if (dn, tn, v) in done:
-            print(f"[{i}/{total}] skip {dn}/{tn} v={v} (already done)")
             continue
-
-        tag = _tag(dn, tn) + f"_v{v}"
-        cell_dir = out_root / tag
+        cell_dir = out_root / f"{_tag(dn, tn)}_v{v}"
         seed = BASE_SEED + 1000 * V_VALUES.index(v) + 13 * CONFIGS.index((dn, tn))
 
         c_t0 = time.time()
@@ -101,14 +101,17 @@ def main():
             K=K, v=v, abundance_kind=ABUNDANCE,
             n_alt=N_ALT, n_null=N_NULL,
             out_dir=cell_dir, seed=seed, nb_workers=NB_WORKERS,
+            ti_tv_ratio=TITV, test_ti_tv_ratio=TITV,
             data_noncanon=dn, test_noncanon=tn,
         )
         result["elapsed_sec"] = round(time.time() - c_t0, 1)
+
         with open(cell_dir / "summary.json", "w") as fj:
             json.dump(result, fj, indent=2)
 
-        nc = result.get("power_by_n_nc", {})
-        nc_hist = nc.get("hist", {})
+        strat = result.get("power_by_nc_stratum", {})
+        has_nc = strat.get("has_nc", {})
+        all_wcf = strat.get("all_wcf", {})
         row = {
             "data_noncanon": dn, "test_noncanon": tn,
             "K": K, "v": v, "abundance": ABUNDANCE,
@@ -118,11 +121,11 @@ def main():
             "n_null_flagged": result.get("n_null_flagged", 0),
             "power": result.get("power", float("nan")),
             "empirical_fdr": result.get("empirical_fdr", float("nan")),
-            "power_has_nc": nc.get("has_nc", {}).get("power", float("nan")),
-            "n_has_nc": nc.get("has_nc", {}).get("n", 0),
-            "power_all_wcf": nc.get("all_wcf", {}).get("power", float("nan")),
-            "n_all_wcf": nc.get("all_wcf", {}).get("n", 0),
-            "nc_hist_json": json.dumps(nc_hist),
+            "power_has_nc": has_nc.get("power", float("nan")),
+            "n_has_nc": has_nc.get("n", 0),
+            "power_all_wcf": all_wcf.get("power", float("nan")),
+            "n_all_wcf": all_wcf.get("n", 0),
+            "nc_hist_json": json.dumps(result.get("nc_hist", {})),
             "elapsed_sec": result["elapsed_sec"],
         }
         writer.writerow(row)
@@ -130,12 +133,14 @@ def main():
 
         el = time.time() - t0
         eta = (el / i) * (total - i)
-        print(f"[{i}/{total}] {dn}/{tn} v={v} "
+        print(f"[{i}/{total}] {dn:>6}/{tn:<6} v={v} "
               f"power={row['power']:.3f} fdr={row['empirical_fdr']:.3f} "
+              f"has_nc={row['power_has_nc']} (n={row['n_has_nc']}) "
+              f"wcf={row['power_all_wcf']} (n={row['n_all_wcf']}) "
               f"({result['elapsed_sec']:.0f}s) ETA {eta/60:.1f}m")
 
     f_out.close()
-    print(f"\nDone. Appended to {summary_csv}")
+    print(f"\nDone. Summary at {summary_csv}")
 
 
 if __name__ == "__main__":

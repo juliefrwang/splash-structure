@@ -29,7 +29,7 @@ Output:
 
 Run:
     python \\
-        -m simulation.plot_combined_sec22
+        -m simulation.plot_fig4_calibration_power
 """
 from __future__ import annotations
 
