@@ -1,0 +1,41 @@
+{
+  "setting_key": "titv0.5",
+  "setting": {
+    "id": "titv-data0.5-test0.5__nc-dataGU-testGU__n1000",
+    "description": "Matched Ti/Tv = 0.5 (uniform identities), G*U both sides. Regenerates the panel D/E operating envelope.",
+    "ti_tv_ratio": 0.5,
+    "test_ti_tv_ratio": 0.5,
+    "data_noncanon": "GU",
+    "test_noncanon": "GU",
+    "n_alt": 1000,
+    "n_null": 1000
+  },
+  "reps": 25,
+  "n_cells": 35,
+  "grid_K": [
+    4,
+    5,
+    6,
+    8,
+    10
+  ],
+  "grid_v": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "base_seed": 1000,
+  "rep_stride": 10007,
+  "seed_formula": "BASE_SEED + REP_STRIDE*rep + 100*K + 10*v + (0 uniform / 1 skewed)",
+  "nb_workers": 8,
+  "struct_revision_commit": "a01c3715d8c682e4a3335287c497189377fa51ed",
+  "splash_structure_commit": "158f15776bbf79fa9448dafac40ee1476d2342e3",
+  "python": "3.10.19",
+  "numpy": "2.2.6",
+  "pandas": "2.3.3",
+  "PYTHONHASHSEED": "0"
+}

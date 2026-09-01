@@ -1,0 +1,43 @@
+{
+  "setting_key": "e3square",
+  "setting": {
+    "grid": "RxR",
+    "id": "e3-RxR-square__K5-v5__nc-dataGU-testGU__n2500",
+    "description": "7x7 (data_R x test_R) square at K=5, v=5, uniform, G*U both sides, n=2500. Replicates panels F/G.",
+    "K": 5,
+    "v": 5,
+    "abundance": "uniform",
+    "data_noncanon": "GU",
+    "test_noncanon": "GU",
+    "n_alt": 2500,
+    "n_null": 2500
+  },
+  "reps": 10,
+  "n_cells": 49,
+  "grid_K": [
+    4,
+    5,
+    6,
+    8,
+    10
+  ],
+  "grid_v": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "base_seed": 1000,
+  "rep_stride": 10007,
+  "seed_formula": "BASE_SEED + REP_STRIDE*rep + 100*K + 10*v + (0 uniform / 1 skewed)",
+  "nb_workers": 8,
+  "struct_revision_commit": "a01c3715d8c682e4a3335287c497189377fa51ed",
+  "splash_structure_commit": "158f15776bbf79fa9448dafac40ee1476d2342e3",
+  "python": "3.10.19",
+  "numpy": "2.2.6",
+  "pandas": "2.3.3",
+  "PYTHONHASHSEED": "0"
+}
